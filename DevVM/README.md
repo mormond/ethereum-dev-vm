@@ -13,11 +13,12 @@ You can select from a few different options for the Windows version, using the l
 
 This will deploy a D2 v2 size VM in the resource group location and return the fully qualified domain name of the VM.
 
-Post install steps
+## Post install steps
 
-After the VM is deployed and running.
-Remote desktop to the VM and open PowerShell.
-Navigate to C:\Packages\Plugins\Microsoft.Compute.CustomScriptExtension\1.8\Downloads\0
-Set the execution policy to allow running local unsigned script (Set-ExecutionPolicy RemoteSigned)
-Run the InstallTruffle2.ps1 script
+* After the VM is deployed and running.
+* Remote desktop to the VM and open PowerShell.
+* Navigate to C:\Packages\Plugins\Microsoft.Compute.CustomScriptExtension\1.8\Downloads\0
+* Set the execution policy to allow running local unsigned script (Set-ExecutionPolicy RemoteSigned)
+* Run the InstallTruffle2.ps1 script
+
 This will finalise installation of the required components
