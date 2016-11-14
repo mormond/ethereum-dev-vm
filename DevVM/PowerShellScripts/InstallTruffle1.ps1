@@ -29,21 +29,20 @@ $nodeInstaller = "node-v6.7.0-x64.msi"
 
 log "Downloading Node"
 Invoke-WebRequest -UseBasicParsing -Uri "https://nodejs.org/dist/$nodeVersion/$nodeInstaller" -OutFile $nodeInstaller -Verbose
+log ".Done downloading Node"
+
 log "Installing Node"
 Start-Process -FilePath ".\$nodeInstaller" -ArgumentList "/quiet" | Wait-Process
+log ".Done installing Node"
 
 # We will also need git
 
-log "Installing Git"
-
 $gitInstaller = "Git-2.10.1-64-bit.exe"
+
+log "Downloading Git"
 Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/$gitInstaller" -OutFile $gitInstaller
+log ".Done downloading Git"
+
+log "Installing Git"
 Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
-
-#Start-Process $gitInstaller /silent -Wait
-
-# Refresh the Path to pick up both node and git
-
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-
-log "Path: $env:Path"
+log ".Done installing Git"

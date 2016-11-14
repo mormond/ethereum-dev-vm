@@ -19,8 +19,8 @@ function log($inString)
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-
+# Add npm global modules to path
+$env:Path += "$env:USERPROFILE\Roaming\npm"
 log "Path: $env:Path"
 
 # Install Windows Build Tools
@@ -28,47 +28,51 @@ log "Path: $env:Path"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-
 npm install --global windows-build-tools
+log ".Done installing windows-build-tools"
 
 # Update to very latest version of npm
 
 log "Updating npm"
-
 npm install --global npm@latest
+log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
 # We need the older 1.0.2 version that includes libeay32.lib
 
-log "Installing OpenSSL"
-
 $openSSLInstaller = "Win64OpenSSL-1_0_2j.exe"
-Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
-Start-Process -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent" | Wait-Process
 
-#Start-Process $openSSLInstaller /verysilent -Wait
+log "Downloading OpenSSL"
+Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
+log ".Done downloading OpenSSL"
+
+log "Installing OpenSSL"
+Start-Process -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent" | Wait-Process
+log ".Done installing OpenSSL"
 
 # Now we can finally install Truffle
 
 log "Installing Truffle"
-
 npm install --global truffle
+log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
-
 npm install --global ethereumjs-testrpc
+log ".Done installing testrpc"
 
 # Install VS Code
 
-log "Installing VSCode"
-
-
 $codeInstaller = "VSCodeSetup-stable.exe"
+
+log "Downloading VSCode"
 Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net/latest/win32/stable" -OutFile $codeInstaller
+log ".Done downloading VSCode"
+
+log "Installing VSCode"
 Start-Process -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode" | Wait-Process
-#Start-Process $codeInstaller "/verysilent /suppressmsgboxes /mergetasks=!runcode"
+log ".Done installing VSCode"
 
 # The End
 
