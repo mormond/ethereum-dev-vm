@@ -46,4 +46,4 @@ Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
 
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 
-log "Path: $envPath"
+log "Path: $env:Path"

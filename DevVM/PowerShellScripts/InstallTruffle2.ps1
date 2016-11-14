@@ -21,7 +21,7 @@ function log($inString)
 
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 
-log "Path: $envPath"
+log "Path: $env:Path"
 
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
