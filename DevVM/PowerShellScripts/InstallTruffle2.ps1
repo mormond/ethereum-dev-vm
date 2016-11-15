@@ -20,7 +20,7 @@ function log($inString)
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 # Add npm global modules to path
-$env:Path += "$env:USERPROFILE\Roaming\npm"
+$env:Path += ";$env:USERPROFILE\Roaming\npm"
 log "Path: $env:Path"
 
 # Install Windows Build Tools
