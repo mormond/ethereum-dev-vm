@@ -20,6 +20,7 @@ function log($inString)
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 # Add npm global modules to path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")  
 $env:Path += ";$env:USERPROFILE\AppData\Roaming\npm"
 log "Path: $env:Path"
 
