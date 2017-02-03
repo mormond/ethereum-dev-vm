@@ -19,6 +19,12 @@ function log($inString)
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
+If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] “Administrator”))
+{
+    Write-Warning “You do not have Administrator rights to run this script. Please re-run this script as an Administrator.”
+    Break
+}
+
 # Add npm global modules to path
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")  
 $env:Path += ";$env:USERPROFILE\AppData\Roaming\npm"
@@ -41,7 +47,7 @@ log ".Done updating npm"
 # Install OpenSSL libraries -- required by secp256k1
 # We need the older 1.0.2 version that includes libeay32.lib
 
-$openSSLInstaller = "Win64OpenSSL-1_0_2j.exe"
+$openSSLInstaller = "Win64OpenSSL-1_0_2k.exe"
 
 log "Downloading OpenSSL"
 Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
