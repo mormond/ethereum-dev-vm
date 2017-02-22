@@ -52,13 +52,13 @@ log ".Done installing Git"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-npm install --global windows-build-tools
+npm install --global windows-build-tools >> ".\npm_wbt_out.txt"
 log ".Done installing windows-build-tools"
 
 # Update to very latest version of npm
 
 log "Updating npm"
-npm install --global npm@latest
+npm install --global npm@latest >> ".\npm_npm_out.txt"
 log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
@@ -77,13 +77,13 @@ log ".Done installing OpenSSL"
 # Now we can finally install Truffle
 
 log "Installing Truffle"
-npm install --global truffle
+npm install --global truffle >> ".\npm_truffle_out.txt"
 log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
-npm install --global ethereumjs-testrpc
+npm install --global ethereumjs-testrpc >> ".\npm_testrpc_out.txt"
 log ".Done installing testrpc"
 
 # Install VS Code
