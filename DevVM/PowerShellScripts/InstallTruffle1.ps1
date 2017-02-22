@@ -46,3 +46,58 @@ log ".Done downloading Git"
 log "Installing Git"
 Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
 log ".Done installing Git"
+
+# Install Windows Build Tools
+# https://github.com/felixrieseberg/windows-build-tools
+# This will take a LONG time but takes care of all node-gyp pre-requisites
+
+log "Installing windows-build-tools"
+npm install --global windows-build-tools
+log ".Done installing windows-build-tools"
+
+# Update to very latest version of npm
+
+log "Updating npm"
+npm install --global npm@latest
+log ".Done updating npm"
+
+# Install OpenSSL libraries -- required by secp256k1
+# We need the older 1.0.2 version that includes libeay32.lib
+
+$openSSLInstaller = "Win64OpenSSL-1_0_2k.exe"
+
+log "Downloading OpenSSL"
+Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
+log ".Done downloading OpenSSL"
+
+log "Installing OpenSSL"
+Start-Process -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent" | Wait-Process
+log ".Done installing OpenSSL"
+
+# Now we can finally install Truffle
+
+log "Installing Truffle"
+npm install --global truffle
+log ".Done installing Truffle"
+
+# Install Ethereum testrpc
+
+log "Installing testrpc"
+npm install --global ethereumjs-testrpc
+log ".Done installing testrpc"
+
+# Install VS Code
+
+$codeInstaller = "VSCodeSetup-stable.exe"
+
+log "Downloading VSCode"
+Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net/latest/win32/stable" -OutFile $codeInstaller
+log ".Done downloading VSCode"
+
+log "Installing VSCode"
+Start-Process -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode" | Wait-Process
+log ".Done installing VSCode"
+
+# The End
+
+log "All done!"

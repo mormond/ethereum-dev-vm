@@ -133,8 +133,7 @@
           "autoUpgradeMinorVersion":true,
           "settings": {
               "fileUris": [
-              "https://raw.githubusercontent.com/dxuk/EthereumBlockchainDemo/master/DevVM/PowerShellScripts/InstallTruffle1.ps1",
-              "https://raw.githubusercontent.com/dxuk/EthereumBlockchainDemo/master/DevVM/PowerShellScripts/InstallTruffle2.ps1"
+              "https://raw.githubusercontent.com/dxuk/EthereumBlockchainDemo/master/DevVM/PowerShellScripts/InstallTruffle1.ps1"
           ],
           "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File InstallTruffle1.ps1"
         }
