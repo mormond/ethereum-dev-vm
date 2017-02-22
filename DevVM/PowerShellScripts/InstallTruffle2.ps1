@@ -26,9 +26,16 @@ If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 # Add npm global modules to path
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")  
-$env:Path += ";$env:USERPROFILE\AppData\Roaming\npm"
-log "Path: $env:Path"
+#$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")  
+#$env:Path += ";$env:USERPROFILE\AppData\Roaming\npm"
+#log "Path: $env:Path"
+
+New-Item -Path $profile -Type file -Force
+$bins = "`";$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
+$prefix = '$env:PATH += '
+$instruction = $prefix + $bins
+Write-Output $instruction >> $profile
+. $profile
 
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
