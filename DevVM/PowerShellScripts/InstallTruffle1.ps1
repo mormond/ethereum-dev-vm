@@ -21,11 +21,13 @@ function log($inString)
 
 $allUserProfilePath = "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
 New-Item -Path $allUserProfilePath -Type file -Force
-$bins = "`";$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
+$bins = "`";$env:ProgramFiles\nodejs\;$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
 $prefix = '$env:PATH += '
 $instruction = $prefix + $bins
 Write-Output $instruction >> $allUserProfilePath
 . $allUserProfilePath
+
+log $env:PATH
 
 # N.B.: must be run as Administrator
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
