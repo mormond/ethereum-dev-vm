@@ -61,7 +61,8 @@ log ".Done installing Git"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-npm install --global windows-build-tools
+$npmOut = $(npm install --global windows-build-tools)
+log $npmOut
 #$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
 log "Windows Build Tools"
 log ".Done installing windows-build-tools"
@@ -69,7 +70,8 @@ log ".Done installing windows-build-tools"
 # Update to very latest version of npm
 
 log "Updating npm"
-npm install --global npm@latest
+$npmOut = $(npm install --global npm@latest)
+log $npmOut
 log "npm Update"
 log ".Done updating npm"
 
@@ -89,14 +91,16 @@ log ".Done installing OpenSSL"
 # Now we can finally install Truffle
 
 log "Installing Truffle"
-npm install --global truffle
+$npmOut = $(npm install --global truffle)
+log $npmOut
 log "Truffle"
 log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
-npm install --global ethereumjs-testrpc
+$npmOut = $(npm install --global ethereumjs-testrpc)
+log $npmOut
 log "test-rpc"
 log ".Done installing testrpc"
 
