@@ -15,14 +15,23 @@ function log($inString)
     $string | out-file -Filepath $logfile -append
 }
 
+#
+# Update all users path for npm, VSCode etc
+#
+
+$allUserProfilePath = "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
+New-Item -Path $allUserProfilePath -Type file -Force
+$bins = "`";$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
+$prefix = '$env:PATH += '
+$instruction = $prefix + $bins
+Write-Output $instruction >> $allUserProfilePath
+. $allUserProfilePath
+
 # N.B.: must be run as Administrator
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 # Download & install Node.JS
-
-#Set-Location $env:TEMP
-#write-host $env:TEMP
 
 $nodeVersion = "v6.7.0"
 $nodeInstaller = "node-v6.7.0-x64.msi"
@@ -52,17 +61,16 @@ log ".Done installing Git"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
+npm install --global windows-build-tools
+#$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
 log "Windows Build Tools"
-log $npmOut
 log ".Done installing windows-build-tools"
 
 # Update to very latest version of npm
 
 log "Updating npm"
-$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global npm@latest
+npm install --global npm@latest
 log "npm Update"
-log $npmOut
 log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
@@ -81,17 +89,15 @@ log ".Done installing OpenSSL"
 # Now we can finally install Truffle
 
 log "Installing Truffle"
-$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global truffle 2>&1
+npm install --global truffle
 log "Truffle"
-log $npmOut
 log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
-$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global ethereumjs-testrpc 2>&1
+npm install --global ethereumjs-testrpc
 log "test-rpc"
-log $npmOut
 log ".Done installing testrpc"
 
 # Install VS Code
