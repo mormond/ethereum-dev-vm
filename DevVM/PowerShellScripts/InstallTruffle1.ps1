@@ -52,13 +52,17 @@ log ".Done installing Git"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-'C:\Program Files\nodejs\node_modules\npm\bin\npm install --global windows-build-tools >> ".\npm_wbt_out.txt"'
+$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
+log("Windows Build Tools")
+log($npmOut)
 log ".Done installing windows-build-tools"
 
 # Update to very latest version of npm
 
 log "Updating npm"
-'C:\Program Files\nodejs\node_modules\npm\bin\npm install --global npm@latest >> ".\npm_npm_out.txt"'
+$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global npm@latest
+log("npm Update")
+log($npmOut)
 log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
@@ -77,13 +81,17 @@ log ".Done installing OpenSSL"
 # Now we can finally install Truffle
 
 log "Installing Truffle"
-'C:\Program Files\nodejs\node_modules\npm\bin\npm install --global truffle >> ".\npm_truffle_out.txt"'
+$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global truffle 2>&1
+log("Truffle")
+log($npmOut)
 log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
-'C:\Program Files\nodejs\node_modules\npm\bin\npm install --global ethereumjs-testrpc >> ".\npm_testrpc_out.txt"'
+$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global ethereumjs-testrpc 2>&1
+log("test-rpc")
+log($npmOut)
 log ".Done installing testrpc"
 
 # Install VS Code
