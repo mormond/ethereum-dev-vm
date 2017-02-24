@@ -53,16 +53,16 @@ log ".Done installing Git"
 
 log "Installing windows-build-tools"
 $npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
-log("Windows Build Tools")
-log($npmOut)
+log "Windows Build Tools"
+log $npmOut
 log ".Done installing windows-build-tools"
 
 # Update to very latest version of npm
 
 log "Updating npm"
 $npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global npm@latest
-log("npm Update")
-log($npmOut)
+log "npm Update"
+log $npmOut
 log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
@@ -82,16 +82,16 @@ log ".Done installing OpenSSL"
 
 log "Installing Truffle"
 $npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global truffle 2>&1
-log("Truffle")
-log($npmOut)
+log "Truffle"
+log $npmOut
 log ".Done installing Truffle"
 
 # Install Ethereum testrpc
 
 log "Installing testrpc"
 $npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global ethereumjs-testrpc 2>&1
-log("test-rpc")
-log($npmOut)
+log "test-rpc"
+log $npmOut
 log ".Done installing testrpc"
 
 # Install VS Code
