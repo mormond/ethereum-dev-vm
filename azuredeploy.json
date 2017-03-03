@@ -124,16 +124,16 @@
       "name": "[concat(variables('vmName'), '/MyCustomScriptExtension')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'))]"
       ],
       "properties": {
-          "publisher": "Microsoft.Compute",
-          "type": "CustomScriptExtension",
-          "typeHandlerVersion": "1.7",
-          "autoUpgradeMinorVersion":true,
-          "settings": {
-              "fileUris": [
-              "https://raw.githubusercontent.com/dxuk/EthereumBlockchainDemo/mormond/mergescripts/DevVM/PowerShellScripts/InstallTruffle1.ps1"
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.7",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/mormond/EthereumDevVm/master/PowerShellScripts/InstallTruffle1.ps1"
           ],
           "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File InstallTruffle1.ps1"
         }
