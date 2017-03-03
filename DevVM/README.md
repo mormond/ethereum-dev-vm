@@ -1,13 +1,13 @@
 # VM configured for Ethereum smart contract development 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdxuk%2FEthereumBlockchainDemo%2Fmaster%2FDevVM%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmormond%2FEthereumDevVm%2Fmaster%2FDevVM%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fdxuk%2FEthereumBlockchainDemo%2Fmaster%2FDevVM%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fmormond%2FEthereumDevVm%2Fmaster%2FDevVM%2Fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template allows you to deploy a simple Windows VM configured with Node.js, Git, Truffle, testrpc and VS Code
+This template allows you to deploy a Windows VM configured with Node.js, Git, Truffle, testrpc and VS Code
 
 You can select from a few different options for the Windows version, using the latest patched version.
 

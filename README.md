@@ -1,2 +1,4 @@
-# EthereumBlockchainDemo
-A repository for the Ethereum smart contracts demo we did at Future Decoded 2016
+# EthereumDevVM
+
+A repo for an Azure Windows VM suitable for Ethereum development including Truffle, VS Code, TestRPC, Git etc
+
