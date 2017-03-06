@@ -15,20 +15,6 @@ function log($inString)
     $string | out-file -Filepath $logfile -append
 }
 
-#
-# Update all users path for npm, VSCode etc
-#
-
-$allUserProfilePath = "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
-New-Item -Path $allUserProfilePath -Type file -Force
-$bins = "`";$env:ProgramFiles\nodejs\;$env:ProgramFiles\Git\cmd;$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
-$prefix = '$env:PATH += '
-$instruction = $prefix + $bins
-Write-Output $instruction >> $allUserProfilePath
-. $allUserProfilePath
-
-log $env:PATH
-
 # N.B.: must be run as Administrator
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser
@@ -57,6 +43,15 @@ log ".Done downloading Git"
 log "Installing Git"
 Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
 log ".Done installing Git"
+
+# Refresh the Path to pick up both node and git
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+
+# We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
+# Otherwise everything will be wiped out by sysprep.
+mkdir C:\npm
+Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
+$env:Path += ";C:\npm"
 
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
@@ -117,6 +112,13 @@ log ".Done downloading VSCode"
 log "Installing VSCode"
 Start-Process -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode" | Wait-Process
 log ".Done installing VSCode"
+
+#
+# Update all users path for npm, VSCode etc
+#
+
+$p = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";C:\npm"
+[Environment]::SetEnvironmentVariable("Path", $p, [System.EnvironmentVariableTarget]::Machine)
 
 # The End
 
