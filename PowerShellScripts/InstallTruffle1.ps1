@@ -53,6 +53,14 @@ mkdir C:\npm
 Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
 $env:Path += ";C:\npm"
 
+# Update to very latest version of npm
+
+log "Updating npm"
+$npmOut = $(npm install --global npm@latest)
+log $npmOut
+log "npm Update"
+log ".Done updating npm"
+
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
 # This will take a LONG time but takes care of all node-gyp pre-requisites
@@ -63,14 +71,6 @@ log $npmOut
 #$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
 log "Windows Build Tools"
 log ".Done installing windows-build-tools"
-
-# Update to very latest version of npm
-
-log "Updating npm"
-$npmOut = $(npm install --global npm@latest)
-log $npmOut
-log "npm Update"
-log ".Done updating npm"
 
 # Install OpenSSL libraries -- required by secp256k1
 # We need the older 1.0.2 version that includes libeay32.lib
