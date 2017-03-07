@@ -1,3 +1,10 @@
+# Parameter help description
+Param(
+    [Parameter(Mandatory=$true)]
+    [string]$devVmUsername,
+    [Parameter(Mandatory=$true)]
+    [securestring]$devVmPassword
+)
 # PowerShell Logging Script
 # SharePointJack.com
 # Tip, if viewing on my blog, click the full screen icon in the toolbar above
@@ -7,8 +14,7 @@
 # this creates a log file with a date and time stamp
 $logfile = ".\logfile1_$(get-date -format `"yyyyMMdd_hhmmsstt`").txt"
 
-function log($inString)
-{
+function log($inString) {
     $dateString = get-date -format "yyyyMMdd_hhmmss tt"
     $string = $inString + " : " + $dateString
     write-host $string
@@ -66,7 +72,8 @@ log ".Done updating npm"
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-$npmOut = $(npm install --global windows-build-tools)
+$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
+Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
 log $npmOut
 #$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
 log "Windows Build Tools"
