@@ -3,8 +3,11 @@ Param(
     [Parameter(Mandatory=$true)]
     [string]$devVmUsername,
     [Parameter(Mandatory=$true)]
-    [securestring]$devVmPassword
+    [string]$devVmPasswordString
 )
+
+$devVmPassword = $devVmPasswordString | ConvertTo-SecureString -AsPlainText -Force
+
 # PowerShell Logging Script
 # SharePointJack.com
 # Tip, if viewing on my blog, click the full screen icon in the toolbar above
