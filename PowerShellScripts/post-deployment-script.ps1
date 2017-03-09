@@ -62,12 +62,30 @@ mkdir C:\npm
 Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
 $env:Path += ";C:\npm"
 
+log 
+
 # Update to very latest version of npm
 log "Updating npm"
 $npmOut = $(npm install --global npm@latest)
 log $npmOut
 log "npm Update"
 log ".Done updating npm"
+
+#
+# Testing VCC install
+#
+
+log "Downloading VCC"
+$vccInstaller = "visualcppbuildtools_full.exe"
+Invoke-WebRequest -UseBasicParsing ` 
+    -Uri "https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe" `
+    -OutFile $nodeInstaller `
+    -Verbose
+log ".Done downloading VCC"
+
+log "Installing VCC"
+Start-Process -FilePath ".\$vccInstaller" -ArgumentList "/quiet" | Wait-Process
+log ".Done installing VCC"
 
 
 # Install Windows Build Tools
