@@ -79,7 +79,7 @@ log "Installing windows-build-tools"
 #$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
 #Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
 
-$npmOut = $(npm install --global windows-build-tools)
+$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
 log $npmOut
 
 log "Windows Build Tools"
