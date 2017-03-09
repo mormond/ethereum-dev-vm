@@ -1,12 +1,12 @@
 # Parameter help description
-Param(
-    [Parameter(Mandatory=$true)]
-    [string]$devVmUsername,
-    [Parameter(Mandatory=$true)]
-    [string]$devVmPasswordString
-)
+# Param(
+#     [Parameter(Mandatory=$true)]
+#     [string]$devVmUsername,
+#     [Parameter(Mandatory=$true)]
+#     [string]$devVmPasswordString
+# )
 
-$devVmPassword = $devVmPasswordString | ConvertTo-SecureString -AsPlainText -Force
+#$devVmPassword = $devVmPasswordString | ConvertTo-SecureString -AsPlainText -Force
 
 # PowerShell Logging Script
 # SharePointJack.com
