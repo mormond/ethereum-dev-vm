@@ -56,12 +56,6 @@ log ".Done installing Git"
 # Refresh the Path to pick up both node and git
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 
-# We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
-# Otherwise everything will be wiped out by sysprep.
-mkdir C:\npm
-Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
-$env:Path += ";C:\npm"
-
 # Update to very latest version of npm
 
 log "Updating npm"
@@ -70,15 +64,24 @@ log $npmOut
 log "npm Update"
 log ".Done updating npm"
 
+# We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
+# Otherwise everything will be wiped out by sysprep.
+mkdir C:\npm
+Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
+$env:Path += ";C:\npm"
+
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
 log "Installing windows-build-tools"
-$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
-Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
+
+#$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
+#Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
+
+$npmOut = $(npm install --global windows-build-tools)
 log $npmOut
-#$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
+
 log "Windows Build Tools"
 log ".Done installing windows-build-tools"
 
