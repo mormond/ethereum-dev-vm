@@ -54,21 +54,21 @@ Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
 log ".Done installing Git"
 
 # Refresh the Path to pick up both node and git
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-
-# Update to very latest version of npm
-
-log "Updating npm"
-$npmOut = $(npm install --global npm@latest)
-log $npmOut
-log "npm Update"
-log ".Done updating npm"
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 # We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
 # Otherwise everything will be wiped out by sysprep.
 mkdir C:\npm
 Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
 $env:Path += ";C:\npm"
+
+# Update to very latest version of npm
+log "Updating npm"
+$npmOut = $(npm install --global npm@latest)
+log $npmOut
+log "npm Update"
+log ".Done updating npm"
+
 
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
