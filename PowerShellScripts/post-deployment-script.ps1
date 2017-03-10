@@ -1,3 +1,13 @@
+# Parameter help description
+# Param(
+#     [Parameter(Mandatory=$true)]
+#     [string]$devVmUsername,
+#     [Parameter(Mandatory=$true)]
+#     [string]$devVmPasswordString
+# )
+
+#$devVmPassword = $devVmPasswordString | ConvertTo-SecureString -AsPlainText -Force
+
 # PowerShell Logging Script
 # SharePointJack.com
 # Tip, if viewing on my blog, click the full screen icon in the toolbar above
@@ -7,27 +17,12 @@
 # this creates a log file with a date and time stamp
 $logfile = ".\logfile1_$(get-date -format `"yyyyMMdd_hhmmsstt`").txt"
 
-function log($inString)
-{
+function log($inString) {
     $dateString = get-date -format "yyyyMMdd_hhmmss tt"
     $string = $inString + " : " + $dateString
     write-host $string
     $string | out-file -Filepath $logfile -append
 }
-
-#
-# Update all users path for npm, VSCode etc
-#
-
-$allUserProfilePath = "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
-New-Item -Path $allUserProfilePath -Type file -Force
-$bins = "`";$env:ProgramFiles\nodejs\;$env:ProgramFiles\Git\cmd;$env:APPDATA\npm;C:\Program Files (x86)\Microsoft VS Code\bin`""
-$prefix = '$env:PATH += '
-$instruction = $prefix + $bins
-Write-Output $instruction >> $allUserProfilePath
-. $allUserProfilePath
-
-log $env:PATH
 
 # N.B.: must be run as Administrator
 # Also need to make sure the execution policy allows running scripts that aren't code-signed
@@ -35,15 +30,15 @@ log $env:PATH
 
 # Download & install Node.JS
 
-$nodeVersion = "v6.7.0"
-$nodeInstaller = "node-v6.7.0-x64.msi"
+$nodeVersion = "v6.10.0"
+$nodeInstaller = "node-v6.10.0-x64.msi"
 
 log "Downloading Node"
 Invoke-WebRequest -UseBasicParsing -Uri "https://nodejs.org/dist/$nodeVersion/$nodeInstaller" -OutFile $nodeInstaller -Verbose
 log ".Done downloading Node"
 
 log "Installing Node"
-Start-Process -FilePath ".\$nodeInstaller" -ArgumentList "/quiet" | Wait-Process
+Start-Process -Wait -FilePath ".\$nodeInstaller" -ArgumentList "/quiet"
 log ".Done installing Node"
 
 # We will also need git
@@ -55,27 +50,73 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/git-for-windows/git/
 log ".Done downloading Git"
 
 log "Installing Git"
-Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
+Start-Process -Wait -FilePath ".\$gitInstaller" -ArgumentList "/silent"
 log ".Done installing Git"
 
-# Install Windows Build Tools
-# https://github.com/felixrieseberg/windows-build-tools
-# This will take a LONG time but takes care of all node-gyp pre-requisites
+# Refresh the Path to pick up both node and git
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
-log "Installing windows-build-tools"
-$npmOut = $(npm install --global windows-build-tools)
-log $npmOut
-#$npmOut = &'C:\Program Files\nodejs\npm.cmd' install --global windows-build-tools 2>&1
-log "Windows Build Tools"
-log ".Done installing windows-build-tools"
+# We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
+# Otherwise everything will be wiped out by sysprep.
+mkdir C:\npm
+Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
+$env:Path += ";C:\npm"
+
+log 
 
 # Update to very latest version of npm
-
 log "Updating npm"
 $npmOut = $(npm install --global npm@latest)
 log $npmOut
 log "npm Update"
 log ".Done updating npm"
+
+#
+# Testing VCC install
+#
+
+log "Downloading VCC"
+$vccInstaller = "visualcppbuildtools_full.exe"
+Invoke-WebRequest -UseBasicParsing `
+    -Uri "https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe" `
+    -OutFile $vccInstaller `
+    -Verbose
+log ".Done downloading VCC"
+
+log "Installing VCC"
+Start-Process -Wait -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" 
+log ".Done installing VCC"
+
+
+log "Downloading Python"
+$pythonInstaller = "python-2.7.11.msi"
+Invoke-WebRequest -UseBasicParsing `
+    -Uri "https://www.python.org/ftp/python/2.7.11/$pythonInstaller" `
+    -OutFile $pythonInstaller `
+    -Verbose
+log ".Done downloading Python"
+
+log "Installing Python"
+Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
+log ".Done installing Python"
+
+npm config set python python2.7 
+npm config set msvs_version 2015
+
+# Install Windows Build Tools
+# https://github.com/felixrieseberg/windows-build-tools
+# This will take a LONG time but takes care of all node-gyp pre-requisites
+
+#log "Installing windows-build-tools"
+
+#$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
+#Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
+
+#$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
+#log $npmOut
+
+#log "Windows Build Tools"
+#log ".Done installing windows-build-tools"
 
 # Install OpenSSL libraries -- required by secp256k1
 # We need the older 1.0.2 version that includes libeay32.lib
@@ -87,7 +128,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLI
 log ".Done downloading OpenSSL"
 
 log "Installing OpenSSL"
-Start-Process -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent" | Wait-Process
+Start-Process -Wait -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent"
 log ".Done installing OpenSSL"
 
 # Now we can finally install Truffle
@@ -115,8 +156,15 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net
 log ".Done downloading VSCode"
 
 log "Installing VSCode"
-Start-Process -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode" | Wait-Process
+Start-Process -Wait -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode"
 log ".Done installing VSCode"
+
+#
+# Update all users path for npm, VSCode etc
+#
+
+$p = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";C:\npm"
+[Environment]::SetEnvironmentVariable("Path", $p, [System.EnvironmentVariableTarget]::Machine)
 
 # The End
 
