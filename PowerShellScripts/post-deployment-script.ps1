@@ -38,7 +38,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://nodejs.org/dist/$nodeVersion/$n
 log ".Done downloading Node"
 
 log "Installing Node"
-Start-Process -FilePath ".\$nodeInstaller" -ArgumentList "/quiet" | Wait-Process
+Start-Process -Wait -FilePath ".\$nodeInstaller" -ArgumentList "/quiet"
 log ".Done installing Node"
 
 # We will also need git
@@ -50,7 +50,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/git-for-windows/git/
 log ".Done downloading Git"
 
 log "Installing Git"
-Start-Process -FilePath ".\$gitInstaller" -ArgumentList "/silent" | Wait-Process
+Start-Process -Wait -FilePath ".\$gitInstaller" -ArgumentList "/silent"
 log ".Done installing Git"
 
 # Refresh the Path to pick up both node and git
@@ -84,7 +84,7 @@ Invoke-WebRequest -UseBasicParsing `
 log ".Done downloading VCC"
 
 log "Installing VCC"
-Start-Process -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" | Wait-Process
+Start-Process -Wait -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" 
 log ".Done installing VCC"
 
 
@@ -97,7 +97,7 @@ Invoke-WebRequest -UseBasicParsing `
 log ".Done downloading Python"
 
 log "Installing Python"
-Start-Process -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet" | Wait-Process
+Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
 log ".Done installing Python"
 
 npm config set python python2.7 
@@ -128,7 +128,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLI
 log ".Done downloading OpenSSL"
 
 log "Installing OpenSSL"
-Start-Process -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent" | Wait-Process
+Start-Process -Wait -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent"
 log ".Done installing OpenSSL"
 
 # Now we can finally install Truffle
@@ -156,7 +156,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net
 log ".Done downloading VSCode"
 
 log "Installing VSCode"
-Start-Process -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode" | Wait-Process
+Start-Process -Wait -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode"
 log ".Done installing VSCode"
 
 #
