@@ -77,14 +77,14 @@ log ".Done updating npm"
 
 log "Downloading VCC"
 $vccInstaller = "visualcppbuildtools_full.exe"
-Invoke-WebRequest -UseBasicParsing ` 
+Invoke-WebRequest -UseBasicParsing `
     -Uri "https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe" `
-    -OutFile $nodeInstaller `
+    -OutFile $vccInstaller `
     -Verbose
 log ".Done downloading VCC"
 
 log "Installing VCC"
-Start-Process -FilePath ".\$vccInstaller" -ArgumentList "/quiet" | Wait-Process
+Start-Process -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" | Wait-Process
 log ".Done installing VCC"
 
 
