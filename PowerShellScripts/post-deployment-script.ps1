@@ -88,20 +88,35 @@ Start-Process -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" | Wait-Process
 log ".Done installing VCC"
 
 
+log "Downloading Python"
+$pythonInstaller = "python-2.7.11.msi"
+Invoke-WebRequest -UseBasicParsing `
+    -Uri "https://www.python.org/ftp/python/2.7.11/$pythonInstaller" `
+    -OutFile $pythonInstaller `
+    -Verbose
+log ".Done downloading Python"
+
+log "Installing Python"
+Start-Process -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet" | Wait-Process
+log ".Done installing Python"
+
+npm config set python python2.7 
+npm config set msvs_version 2015
+
 # Install Windows Build Tools
 # https://github.com/felixrieseberg/windows-build-tools
 # This will take a LONG time but takes care of all node-gyp pre-requisites
 
-log "Installing windows-build-tools"
+#log "Installing windows-build-tools"
 
 #$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
 #Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
 
-$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
-log $npmOut
+#$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
+#log $npmOut
 
-log "Windows Build Tools"
-log ".Done installing windows-build-tools"
+#log "Windows Build Tools"
+#log ".Done installing windows-build-tools"
 
 # Install OpenSSL libraries -- required by secp256k1
 # We need the older 1.0.2 version that includes libeay32.lib
