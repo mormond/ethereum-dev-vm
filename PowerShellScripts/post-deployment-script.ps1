@@ -100,8 +100,10 @@ log "Installing Python"
 Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
 log ".Done installing Python"
 
-npm config set python python2.7 
-Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value msvs_version="2015"
+npm config set python python2.7 --global
+npm config set msvs_version 2015 --global
+ 
+#Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value msvs_version="2015"
 
 #npm config set msvs_version 2015
 
