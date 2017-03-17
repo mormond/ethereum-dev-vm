@@ -134,8 +134,10 @@
         "settings": {
           "fileUris": [
             "https://raw.githubusercontent.com/mormond/ethereum-dev-vm/master/PowerShellScripts/post-deployment-script.ps1"
-          ],
-          "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File post-deployment-script.ps1"
+          ]
+        },
+        "protectedSettings": {
+            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File post-deployment-script.ps1 -vmAdminUsername ', parameters('adminUsername'), ' -vmAdminPassword \"', parameters('adminPassword'), '\"')]"
         }
       }
     },

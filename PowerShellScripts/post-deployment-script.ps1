@@ -1,175 +1,169 @@
-# Parameter help description
-# Param(
-#     [Parameter(Mandatory=$true)]
-#     [string]$devVmUsername,
-#     [Parameter(Mandatory=$true)]
-#     [string]$devVmPasswordString
-# )
+Param(
+    $vmAdminUsername,
+    $vmAdminPassword
+)
 
-#$devVmPassword = $devVmPasswordString | ConvertTo-SecureString -AsPlainText -Force
+$password = ConvertTo-SecureString $vmAdminPassword -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential("$env:USERDOMAIN\$vmAdminUsername", $password)
 
-# PowerShell Logging Script
-# SharePointJack.com
-# Tip, if viewing on my blog, click the full screen icon in the toolbar above
+Invoke-Command -Credential $credential -ComputerName $env:COMPUTERNAME -ArgumentList $PSScriptRoot -ScriptBlock {
+    param(
+        $workingDir
+    )
 
-# "Global" variables:
-# the filename is scoped here
-# this creates a log file with a date and time stamp
-$logfile = ".\logfile1_$(get-date -format `"yyyyMMdd_hhmmsstt`").txt"
+    Write-Verbose -Verbose "Entering Elevated Custom Script Commands..."
 
-function log($inString) {
-    $dateString = get-date -format "yyyyMMdd_hhmmss tt"
-    $string = $inString + " : " + $dateString
-    write-host $string
-    $string | out-file -Filepath $logfile -append
-}
+    # PowerShell Logging Script
+    # SharePointJack.com
+    # Tip, if viewing on my blog, click the full screen icon in the toolbar above
 
-# N.B.: must be run as Administrator
-# Also need to make sure the execution policy allows running scripts that aren't code-signed
-# Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+    # "Global" variables:
+    # the filename is scoped here
+    # this creates a log file with a date and time stamp
+    $logfile = ".\logfile1_$(get-date -format `"yyyyMMdd_hhmmsstt`").txt"
 
-# Download & install Node.JS
+    function log($inString) {
+        $dateString = get-date -format "yyyyMMdd_hhmmss tt"
+        $string = $inString + " : " + $dateString
+        write-host $string
+        $string | out-file -Filepath $logfile -append
+    }
 
-$nodeVersion = "v6.10.0"
-$nodeInstaller = "node-v6.10.0-x64.msi"
+    # Download & install Node.JS
 
-log "Downloading Node"
-Invoke-WebRequest -UseBasicParsing -Uri "https://nodejs.org/dist/$nodeVersion/$nodeInstaller" -OutFile $nodeInstaller -Verbose
-log ".Done downloading Node"
+    $nodeVersion = "v6.10.0"
+    $nodeInstaller = "node-v6.10.0-x64.msi"
 
-log "Installing Node"
-Start-Process -Wait -FilePath ".\$nodeInstaller" -ArgumentList "/quiet"
-log ".Done installing Node"
+    log "Downloading Node"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://nodejs.org/dist/$nodeVersion/$nodeInstaller" -OutFile $nodeInstaller -Verbose
+    log ".Done downloading Node"
 
-# We will also need git
+    log "Installing Node"
+    Start-Process -Wait -FilePath ".\$nodeInstaller" -ArgumentList "/quiet"
+    log ".Done installing Node"
 
-$gitInstaller = "Git-2.10.1-64-bit.exe"
+    # We will also need git
 
-log "Downloading Git"
-Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/$gitInstaller" -OutFile $gitInstaller
-log ".Done downloading Git"
+    $gitInstaller = "Git-2.10.1-64-bit.exe"
 
-log "Installing Git"
-Start-Process -Wait -FilePath ".\$gitInstaller" -ArgumentList "/silent"
-log ".Done installing Git"
+    log "Downloading Git"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/git-for-windows/git/releases/download/v2.10.1.windows.1/$gitInstaller" -OutFile $gitInstaller
+    log ".Done downloading Git"
 
-# Refresh the Path to pick up both node and git
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    log "Installing Git"
+    Start-Process -Wait -FilePath ".\$gitInstaller" -ArgumentList "/silent"
+    log ".Done installing Git"
 
-# We need to instruct npm to install modules in a "real" global location instead of the user's %APPDATA% directory.
-# Otherwise everything will be wiped out by sysprep.
-mkdir C:\npm
-Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value prefix=C:\npm
-$env:Path += ";C:\npm"
+    # Refresh the Path to pick up both node and git
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
-log 
+    # Update to very latest version of npm
+    log "Updating npm"
+    $npmOut = $(npm install --global npm@latest)
+    log $npmOut
+    log "npm Update"
+    log ".Done updating npm"
 
-# Update to very latest version of npm
-log "Updating npm"
-$npmOut = $(npm install --global npm@latest)
-log $npmOut
-log "npm Update"
-log ".Done updating npm"
+    #
+    # Testing VCC install
+    #
 
-#
-# Testing VCC install
-#
-
-log "Downloading VCC"
-$vccInstaller = "visualcppbuildtools_full.exe"
-Invoke-WebRequest -UseBasicParsing `
+    log "Downloading VCC"
+    $vccInstaller = "visualcppbuildtools_full.exe"
+    Invoke-WebRequest -UseBasicParsing `
     -Uri "https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe" `
     -OutFile $vccInstaller `
     -Verbose
-log ".Done downloading VCC"
+    log ".Done downloading VCC"
 
-log "Installing VCC"
-Start-Process -Wait -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" 
-log ".Done installing VCC"
+    log "Installing VCC"
+    Start-Process -Wait -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" 
+    log ".Done installing VCC"
 
 
-log "Downloading Python"
-$pythonInstaller = "python-2.7.11.msi"
-Invoke-WebRequest -UseBasicParsing `
+    log "Downloading Python"
+    $pythonInstaller = "python-2.7.11.msi"
+    Invoke-WebRequest -UseBasicParsing `
     -Uri "https://www.python.org/ftp/python/2.7.11/$pythonInstaller" `
     -OutFile $pythonInstaller `
     -Verbose
-log ".Done downloading Python"
+    log ".Done downloading Python"
 
-log "Installing Python"
-Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
-log ".Done installing Python"
+    log "Installing Python"
+    Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
+    log ".Done installing Python"
 
-npm config set python python2.7 --global
-npm config set msvs_version 2015 --global
+    npm config set python python2.7 --global
+    npm config set msvs_version 2015 --global
  
-#Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value msvs_version="2015"
+    #Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value msvs_version="2015"
 
-#npm config set msvs_version 2015
+    #npm config set msvs_version 2015
 
-# Install Windows Build Tools
-# https://github.com/felixrieseberg/windows-build-tools
-# This will take a LONG time but takes care of all node-gyp pre-requisites
+    # Install Windows Build Tools
+    # https://github.com/felixrieseberg/windows-build-tools
+    # This will take a LONG time but takes care of all node-gyp pre-requisites
 
-#log "Installing windows-build-tools"
+    #log "Installing windows-build-tools"
 
-#$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
-#Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
+    #$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
+    #Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
 
-#$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
-#log $npmOut
+    #$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
+    #log $npmOut
 
-#log "Windows Build Tools"
-#log ".Done installing windows-build-tools"
+    #log "Windows Build Tools"
+    #log ".Done installing windows-build-tools"
 
-# Install OpenSSL libraries -- required by secp256k1
-# We need the older 1.0.2 version that includes libeay32.lib
+    # Install OpenSSL libraries -- required by secp256k1
+    # We need the older 1.0.2 version that includes libeay32.lib
 
-$openSSLInstaller = "Win64OpenSSL-1_0_2k.exe"
+    $openSSLInstaller = "Win64OpenSSL-1_0_2k.exe"
 
-log "Downloading OpenSSL"
-Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
-log ".Done downloading OpenSSL"
+    log "Downloading OpenSSL"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://slproweb.com/download/$openSSLInstaller" -OutFile $openSSLInstaller
+    log ".Done downloading OpenSSL"
 
-log "Installing OpenSSL"
-Start-Process -Wait -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent"
-log ".Done installing OpenSSL"
+    log "Installing OpenSSL"
+    Start-Process -Wait -FilePath ".\$openSSLInstaller" -ArgumentList "/verysilent"
+    log ".Done installing OpenSSL"
 
-# Now we can finally install Truffle
+    # Now we can finally install Truffle
 
-log "Installing Truffle"
-$npmOut = $(npm install --global truffle)
-log $npmOut
-log "Truffle"
-log ".Done installing Truffle"
+    log "Installing Truffle"
+    $npmOut = $(npm install --global truffle)
+    log $npmOut
+    log "Truffle"
+    log ".Done installing Truffle"
 
-# Install Ethereum testrpc
+    # Install Ethereum testrpc
 
-log "Installing testrpc"
-$npmOut = $(npm install --global ethereumjs-testrpc)
-log $npmOut
-log "test-rpc"
-log ".Done installing testrpc"
+    log "Installing testrpc"
+    $npmOut = $(npm install --global ethereumjs-testrpc)
+    log $npmOut
+    log "test-rpc"
+    log ".Done installing testrpc"
 
-# Install VS Code
+    # Install VS Code
 
-$codeInstaller = "VSCodeSetup-stable.exe"
+    $codeInstaller = "VSCodeSetup-stable.exe"
 
-log "Downloading VSCode"
-Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net/latest/win32/stable" -OutFile $codeInstaller
-log ".Done downloading VSCode"
+    log "Downloading VSCode"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://vscode-update.azurewebsites.net/latest/win32/stable" -OutFile $codeInstaller
+    log ".Done downloading VSCode"
 
-log "Installing VSCode"
-Start-Process -Wait -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode"
-log ".Done installing VSCode"
+    log "Installing VSCode"
+    Start-Process -Wait -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode"
+    log ".Done installing VSCode"
 
-#
-# Update all users path for npm, VSCode etc
-#
+    #
+    # Update all users path for npm, VSCode etc
+    #
 
-$p = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";C:\npm"
-[Environment]::SetEnvironmentVariable("Path", $p, [System.EnvironmentVariableTarget]::Machine)
+    $p = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";C:\npm"
+    [Environment]::SetEnvironmentVariable("Path", $p, [System.EnvironmentVariableTarget]::Machine)
 
-# The End
+    # The End
 
-log "All done!"
+    log "All done!"
+}
