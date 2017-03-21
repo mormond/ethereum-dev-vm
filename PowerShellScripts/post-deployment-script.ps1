@@ -64,56 +64,15 @@ Invoke-Command -Credential $credential -ComputerName $env:COMPUTERNAME -Argument
     log "npm Update"
     log ".Done updating npm"
 
-    #
-    # Testing VCC install
-    #
-
-    log "Downloading VCC"
-    $vccInstaller = "visualcppbuildtools_full.exe"
-    Invoke-WebRequest -UseBasicParsing `
-    -Uri "https://download.microsoft.com/download/5/f/7/5f7acaeb-8363-451f-9425-68a90f98b238/visualcppbuildtools_full.exe" `
-    -OutFile $vccInstaller `
-    -Verbose
-    log ".Done downloading VCC"
-
-    log "Installing VCC"
-    Start-Process -Wait -FilePath ".\$vccInstaller" -ArgumentList "/Quiet" 
-    log ".Done installing VCC"
-
-
-    log "Downloading Python"
-    $pythonInstaller = "python-2.7.11.msi"
-    Invoke-WebRequest -UseBasicParsing `
-    -Uri "https://www.python.org/ftp/python/2.7.11/$pythonInstaller" `
-    -OutFile $pythonInstaller `
-    -Verbose
-    log ".Done downloading Python"
-
-    log "Installing Python"
-    Start-Process -Wait -FilePath ".\$pythonInstaller" -ArgumentList "/Quiet"
-    log ".Done installing Python"
-
-    npm config set python python2.7 --global
-    npm config set msvs_version 2015 --global
- 
-    #Set-Content -Path $ENV:ProgramFiles\nodejs\node_modules\npm\npmrc -Value msvs_version="2015"
-
-    #npm config set msvs_version 2015
-
     # Install Windows Build Tools
     # https://github.com/felixrieseberg/windows-build-tools
     # This will take a LONG time but takes care of all node-gyp pre-requisites
 
-    #log "Installing windows-build-tools"
-
-    #$cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $devVmUsername, $devVmPassword
-    #Invoke-Command -ScriptBlock { $npmOut = $(npm install --global windows-build-tools) } -Credential $cred -Computer localhost
-
-    #$npmOut = $(npm --debug --vcc-build-tools-parameters='[""/Passive""]' install --global windows-build-tools)
-    #log $npmOut
-
-    #log "Windows Build Tools"
-    #log ".Done installing windows-build-tools"
+    log "Installing windows-build-tools"
+    $npmOut = $(npm install --global windows-build-tools)
+    log $npmOut
+    log "Windows Build Tools"
+    log ".Done installing windows-build-tools"
 
     # Install OpenSSL libraries -- required by secp256k1
     # We need the older 1.0.2 version that includes libeay32.lib
@@ -155,13 +114,6 @@ Invoke-Command -Credential $credential -ComputerName $env:COMPUTERNAME -Argument
     log "Installing VSCode"
     Start-Process -Wait -FilePath ".\$codeInstaller" -ArgumentList "/verysilent", "/suppressmsgboxes", "/mergetasks=!runcode"
     log ".Done installing VSCode"
-
-    #
-    # Update all users path for npm, VSCode etc
-    #
-
-    $p = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";C:\npm"
-    [Environment]::SetEnvironmentVariable("Path", $p, [System.EnvironmentVariableTarget]::Machine)
 
     # The End
 
